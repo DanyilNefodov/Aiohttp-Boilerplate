@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  server:
+    container_name: ${SERVER_NAME}
+    command: python ./server/main.py
+    working_dir: /polls/
+    ports:
+      - "$SERVER_PORT:$SERVER_PORT"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - database
+    volumes:
+      - .:/polls
+
+  database:
+    container_name: ${DB_NAME}
+    image: postgres:latest
+    restart: always
+    # ports:
+    #   - "$DB_PORT:$DB_PORT"
+    volumes:
+      - ./db/db.sql:/docker-entrypoint-initdb.d/db.sql
